@@ -13,7 +13,6 @@ import {
   VButton,
   VDropdown,
   VDropdownItem,
-  VSpace,
   VTabbar,
 } from "@halo-dev/components";
 import type {
@@ -37,7 +36,6 @@ import {
 import type { GridLayout } from "vue-grid-layout";
 import { useI18n } from "vue-i18n";
 import { onBeforeRouteLeave, useRouter } from "vue-router";
-import RiArrowGoBackLine from "~icons/ri/arrow-go-back-line";
 import RiBox3Line from "~icons/ri/box-3-line";
 import RiFileCopyLine from "~icons/ri/file-copy-line";
 import WidgetEditableItem from "./components/WidgetEditableItem.vue";
@@ -254,6 +252,12 @@ async function handleSave() {
     await queryClient.invalidateQueries({
       queryKey: ["core:dashboard:widgets"],
     });
+
+    await queryClient.invalidateQueries({
+      queryKey: ["core:dashboard:widgets:view"],
+    });
+
+    Toast.success(t("core.common.toast.save_success"));
   } catch (error) {
     console.error("Failed to save dashboard widgets config", error);
   } finally {
@@ -316,12 +320,12 @@ function handleCopyFromLayout(breakpoint: string) {
 }
 </script>
 <template>
-  <div
-    class="flex items-center justify-between bg-white px-4 py-1.5 gap-5 flex-wrap sticky top-0 z-10"
-  >
-    <h2 class="flex items-center truncate text-xl font-bold text-gray-800">
+  <div class="page-header py-1.5">
+    <h2 class="page-header__title">
       <IconDashboard class="mr-2 self-center" />
-      <span>{{ $t("core.dashboard_designer.title") }}</span>
+      <span class="page-header__title-text">
+        {{ $t("core.dashboard_designer.title") }}
+      </span>
     </h2>
     <div
       class="hidden sm:block"
@@ -334,17 +338,14 @@ function handleCopyFromLayout(breakpoint: string) {
         @change="handleBreakpointChange"
       ></VTabbar>
     </div>
-    <VSpace>
-      <VButton @click="handleBack">
-        <template #icon>
-          <RiArrowGoBackLine class="h-full w-full" />
-        </template>
+    <div class="page-header__actions">
+      <VButton ghost @click="handleBack">
         {{ $t("core.common.buttons.back") }}
       </VButton>
       <VDropdown>
         <VButton>
           <template #icon>
-            <IconAddCircle class="h-full w-full" />
+            <IconAddCircle />
           </template>
           {{ $t("core.dashboard_designer.actions.add_widget") }}
         </VButton>
@@ -392,11 +393,11 @@ function handleCopyFromLayout(breakpoint: string) {
         @click="handleSave"
       >
         <template #icon>
-          <IconSave class="h-full w-full" />
+          <IconSave />
         </template>
         {{ $t("core.common.buttons.save") }}
       </VButton>
-    </VSpace>
+    </div>
   </div>
 
   <div class="dashboard m-4 transition-all" :style="designContainerStyles">

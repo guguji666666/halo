@@ -13,6 +13,7 @@ import type {
   Theme,
   ListedComment,
   ListedReply,
+  ListedSinglePage,
 } from "@halo-dev/api-client";
 import type { AnyExtension } from "@halo-dev/richtext-editor";
 import type { Component, Ref } from "vue";
@@ -27,7 +28,7 @@ import type { AttachmentSelectProvider } from "../states/attachment-selector";
 import type { FunctionalPage } from "../states/pages";
 
 export interface RouteRecordAppend {
-  parentName: RouteRecordName;
+  parentName: NonNullable<RouteRecordName>;
   route: RouteRecordRaw;
 }
 
@@ -59,6 +60,10 @@ export interface ExtensionPoint {
     post: Ref<ListedPost>
   ) => OperationItem<ListedPost>[];
 
+  "single-page:list-item:operation:create"?: (
+    singlePage: Ref<ListedSinglePage>
+  ) => OperationItem<ListedSinglePage>[];
+
   "comment:list-item:operation:create"?: (
     comment: Ref<ListedComment>
   ) => OperationItem<ListedComment>[];
@@ -82,6 +87,10 @@ export interface ExtensionPoint {
   "plugin:list-item:field:create"?: (plugin: Ref<Plugin>) => EntityFieldItem[];
 
   "post:list-item:field:create"?: (post: Ref<ListedPost>) => EntityFieldItem[];
+
+  "single-page:list-item:field:create"?: (
+    singlePage: Ref<ListedSinglePage>
+  ) => EntityFieldItem[];
 
   "theme:list:tabs:create"?: () => ThemeListTab[] | Promise<ThemeListTab[]>;
 
